@@ -1,4 +1,5 @@
 package view;
+import controller.Controller;
 import processing.core.PApplet;
 
 public class Main extends PApplet{
@@ -9,6 +10,7 @@ public class Main extends PApplet{
 		PApplet.main("view.Main");
 	}
 		
+	private Controller controller;
 	
 	@Override
 	public void settings() {
@@ -18,13 +20,14 @@ public class Main extends PApplet{
 	@Override
 	public void setup() {
 		
+		controller = new Controller(this);
 	
 	}
 	
 	@Override
 	public void draw() {
 		background(255);
-		
+		controller.draw();
 		
 		
 		
