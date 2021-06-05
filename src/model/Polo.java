@@ -1,11 +1,12 @@
 package model;
 
 import processing.core.PApplet;
+import processing.core.PConstants;
 
-public class Polo implements Runnable {
+public class Polo implements Runnable, Comparable<Polo> {
 
 	private PApplet app;
-	private int x, y, d, dirX, dirY, speed, dirTimer, dir;
+	private int x, y, d, dirX, dirY, speed, dirTimer, dir, distMarco;
 
 	public Polo(PApplet app, int x, int y) {
 		this.app = app;
@@ -36,10 +37,19 @@ public class Polo implements Runnable {
 		
 	}
 	
-	public void draw() {
+	public void draw(boolean message) {
 		app.fill(23, 225, 219);
 		app.noStroke();
 		app.circle(x, y, d);
+		
+		//Message from world to send position
+		if (message) {
+			app.fill(80);
+			app.textSize(14);
+			app.textAlign(PConstants.CENTER);
+			app.text("Polo", x, y+(d-5));
+			app.text(x + " , " + y, x, y+(d+10));
+		}
 		
 		//Counter for the change in direction so its not as fast
 		if (dirTimer > 0) {
@@ -93,5 +103,10 @@ public class Polo implements Runnable {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public int compareTo(Polo o) {
+		return 0;
 	}
 }

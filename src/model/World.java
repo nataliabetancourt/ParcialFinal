@@ -33,15 +33,13 @@ public class World {
 	public void draw() {
 		//Drawing and moving polo circles
 		for (int i = 0; i < poloCircles.size(); i++) {
-			poloCircles.get(i).draw();
+			poloCircles.get(i).draw(marco.isSayMarco());
 			new Thread(poloCircles.get(i)).start();
 		}
 		
 		//Drawing and moving marco circle
 		marco.draw();
 		new Thread(marco).start();
-		
-
 	}
 
 }
