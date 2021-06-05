@@ -1,13 +1,17 @@
 package model;
 
+import java.util.ArrayList;
+
 import processing.core.PApplet;
 import processing.core.PConstants;
 
 public class Marco implements Runnable{
 
 	private PApplet app;
-	private int x, y, d, dirX, dirY, speed, sayMarcoTimer, showMesTimer;
-	private boolean sayMarco;
+	private Polo nearestPolo;
+	private int d, dirX, dirY, speed, sayMarcoTimer, showMesTimer, radius;
+	private float x, y, a;
+	private boolean sayMarco, trapped;
 	
 	public Marco(PApplet app) {
 		this.app = app;
@@ -21,7 +25,10 @@ public class Marco implements Runnable{
 		this.speed = 4;
 		this.sayMarco = false;
 		this.sayMarcoTimer = 150;
-		this.showMesTimer = 150;
+		this.showMesTimer = 200;
+		this.radius = 600;
+		this.a = (float) 0.3;
+		this.trapped = false;
 		
 		//Direction for Marco randomly made
 		if (dirX == 0) {
@@ -45,9 +52,7 @@ public class Marco implements Runnable{
 		}
 		
 		//Marco circle
-		app.fill(240, 68, 133, 90);
-		app.strokeWeight(7);
-		app.stroke(207, 21, 89);
+		app.fill(207, 21, 89);
 		app.circle(x, y, d);
 		
 		//Timer to show message and send message to world
@@ -60,7 +65,7 @@ public class Marco implements Runnable{
 			sayMarco = true;
 			if (showMesTimer == 0) {
 				sayMarcoTimer = 150;
-				showMesTimer = 150;
+				showMesTimer = 200;
 				sayMarco = false;
 			}
 		}
@@ -71,18 +76,64 @@ public class Marco implements Runnable{
 		x += dirX * speed;
 		y += dirY * speed;
 		
-		if (x < 0 || x > 700) {
-			dirX = dirX * (-1);
+		if (x < 20 || x > 680) {
+			dirX *= (-1);
 		}
 		
-		if (y < 0 || y > 700) {
-			dirY = dirY * (-1);
+		if (y < 20 || y > 680) {
+			dirY *= (-1);
 		}
+	}
+	
+	public void followPolo(Polo polo) {
+		
+		//Calculate if polo has entered the surrounding radius and classify it has nearest polo
+		if (app.dist(x, y, polo.getX(), polo.getY()) < radius/2) {
+			//Stops regular marco movement
+			trapped = true;
+			nearestPolo = polo;	
+		}
+	
+		//Makes marco chase the designated polo
+		if (trapped) {
+			x += (nearestPolo.getX()-x)*a;
+			y += (nearestPolo.getY()-y)*a;
+		}
+			
+		//Trapped is used to continue the regular Marco movement
+		trapped = false;
+		
+	}
+	
+	
+	//Second option, didnt work that great
+	public void followPolo2(ArrayList<Polo> polos) {
+		nearestPolo = polos.get(0);
+		
+		for (int i = 0; i < polos.size(); i++) {
+			//Calculate the distance between polo 0 and marco, has a reference point
+			int distP0 = (int) app.dist(x, y, nearestPolo.getX(), nearestPolo.getY());
+			//Then calculate the distance between all the polos and the marco
+			int distPolos = (int) app.dist(x, y, polos.get(i).getX(), polos.get(i).getY());
+			
+			//Compare the reference distance with the rest to determine the smallest distance
+			if (distPolos < distP0) {
+				nearestPolo = polos.get(i);
+			}
+		}
+		
+		if (sayMarco) {
+			x += (nearestPolo.getX()-x)*a;
+			y += (nearestPolo.getX()-y)*a;
+		}
+
 	}
 
 	@Override
 	public void run() {
-		move();
+		if (sayMarco == false) {
+			move();
+		}
 		
 		try {
 			Thread.sleep(20);
@@ -94,5 +145,17 @@ public class Marco implements Runnable{
 	public boolean isSayMarco() {
 		return sayMarco;
 	}
-
+	
+	public float getX() {
+		return x;
+	}
+	
+	public float getY() {
+		return y;
+	}
+	
+	public int getD() {
+		return d;
+	}
+	
 }

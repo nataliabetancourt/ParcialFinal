@@ -3,10 +3,10 @@ package model;
 import processing.core.PApplet;
 import processing.core.PConstants;
 
-public class Polo implements Runnable, Comparable<Polo> {
+public class Polo implements Runnable {
 
 	private PApplet app;
-	private int x, y, d, dirX, dirY, speed, dirTimer, dir, distMarco;
+	private int x, y, d, dirX, dirY, speed;
 
 	public Polo(PApplet app, int x, int y) {
 		this.app = app;
@@ -19,8 +19,6 @@ public class Polo implements Runnable, Comparable<Polo> {
 		this.dirY = (int)(app.random(2));
 		this.dirX = (int)(app.random(2));
 		this.speed = 2;
-		this.dirTimer = 80;
-		this.dir = 0;
 		
 		//Direction for Polo randomly made
 		if (dirX == 0) {
@@ -48,49 +46,22 @@ public class Polo implements Runnable, Comparable<Polo> {
 			app.textSize(14);
 			app.textAlign(PConstants.CENTER);
 			app.text("Polo", x, y+(d-5));
-			app.text(x + " , " + y, x, y+(d+10));
 		}
-		
-		//Counter for the change in direction so its not as fast
-		if (dirTimer > 0) {
-			dirTimer--;
-		}
-		
-		//Choosing a random direction
-		if (dirTimer == 0) {
-			dir = (int) app.random(1,4);
-			dirTimer = 80;
-		}
+
 	}
 
 	public void move() {
 		//Regular movement based on direction and speed
-		x += dirX * speed;
-		y += dirY * speed;
-		
-		//Switch to randomly change directions after a few seconds
-		switch (dir) {
-		case 1:
-			dirX = -1;
-			break;
-		case 2:
-			dirX = 1;
-			break;
-		case 3:
-			dirY = -1;
-		break;
-		case 4:
-			dirY = 1;
-		break;
-		}
+		x += speed * dirX;
+		y += speed * dirY;
 		
 		//Borders
-		if (x < 0 || x > 700) {
-			dirX = dirX * (-1);
+		if (x <= 20 || x >= 680) {
+			dirX *= (-1);
 		}
 		
-		if (y < 0 || y > 700) {
-			dirY = dirY * (-1);
+		if (y <= 20 || y >= 680) {
+			dirY *= (-1);
 		}
 	}
 
@@ -104,9 +75,21 @@ public class Polo implements Runnable, Comparable<Polo> {
 			e.printStackTrace();
 		}
 	}
-
-	@Override
-	public int compareTo(Polo o) {
-		return 0;
+	
+	public int getX() {
+		return x;
 	}
+	
+	public int getY() {
+		return y;
+	}
+	
+	public int getDirX() {
+		return dirX;
+	}
+	
+	public int getDirY() {
+		return dirY;
+	}
+
 }
