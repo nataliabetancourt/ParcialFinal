@@ -104,30 +104,6 @@ public class Marco implements Runnable{
 		trapped = false;
 		
 	}
-	
-	
-	//Second option, didnt work that great
-	public void followPolo2(ArrayList<Polo> polos) {
-		nearestPolo = polos.get(0);
-		
-		for (int i = 0; i < polos.size(); i++) {
-			//Calculate the distance between polo 0 and marco, has a reference point
-			int distP0 = (int) app.dist(x, y, nearestPolo.getX(), nearestPolo.getY());
-			//Then calculate the distance between all the polos and the marco
-			int distPolos = (int) app.dist(x, y, polos.get(i).getX(), polos.get(i).getY());
-			
-			//Compare the reference distance with the rest to determine the smallest distance
-			if (distPolos < distP0) {
-				nearestPolo = polos.get(i);
-			}
-		}
-		
-		if (sayMarco) {
-			x += (nearestPolo.getX()-x)*a;
-			y += (nearestPolo.getX()-y)*a;
-		}
-
-	}
 
 	@Override
 	public void run() {

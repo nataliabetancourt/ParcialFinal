@@ -44,7 +44,6 @@ public class World {
 			//Determine the closest polo to marco and then have marco follow it when the message is being sent
 			if (marco.isSayMarco()) {
 				marco.followPolo(polo);
-				//marco.followPolo2(poloCircles);
 				caughtPolo();
 			}
 		}
